@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/factorysh/chevillette/log"
+	"github.com/factorysh/chevillette/memory"
 	"github.com/factorysh/fluent-server/server"
 )
 
@@ -13,13 +14,15 @@ type FluentdInput struct {
 	tag    string
 	line   log.LineReader
 	logKey string
+	memory memory.Memory
 }
 
-func New(tag string, line log.LineReader) *FluentdInput {
+func New(tag string, line log.LineReader, memory *memory.Memory) *FluentdInput {
 	f := &FluentdInput{
 		tag:    tag,
 		line:   line,
 		logKey: "log",
+		memory: *memory,
 	}
 	s := server.New(func(tag string, ts *time.Time, record map[string]interface{}) error {
 		if tag == f.tag {
@@ -29,6 +32,7 @@ func New(tag string, line log.LineReader) *FluentdInput {
 				fmt.Println("error", err)
 				return nil
 			}
+			memory.Set(keys, *ts)
 			fmt.Println("keys", keys)
 		}
 		return nil
