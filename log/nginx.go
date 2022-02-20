@@ -5,25 +5,25 @@ import (
 	iradix "github.com/hashicorp/go-immutable-radix"
 )
 
-type Nginx struct {
+type NginxLine struct {
 	tree             *iradix.Node
 	linePattern      pattern.Matcher
 	linePatternNames map[string]int
 }
 
-func NewNginx(prefix ...string) (*Nginx, error) {
+func NewNginxLine(prefix ...string) (*NginxLine, error) {
 	r := iradix.New()
 	for _, p := range prefix {
 		r, _, _ = r.Insert([]byte(p), new(interface{}))
 	}
-	n := &Nginx{
+	n := &NginxLine{
 		tree: r.Root(),
 	}
 	err := n.SetPattern(`<ip> - - <_> "<method> <url> <_>" <status> <_> <_> "<_>" <_>`)
 	return n, err
 }
 
-func (n *Nginx) SetPattern(pttrn string) error {
+func (n *NginxLine) SetPattern(pttrn string) error {
 	var err error
 	n.linePattern, err = pattern.New(pttrn)
 	if err != nil {
@@ -36,7 +36,7 @@ func (n *Nginx) SetPattern(pttrn string) error {
 	return nil
 }
 
-func (n *Nginx) Log(line []byte) (string, error) {
+func (n *NginxLine) Log(line []byte) (string, error) {
 	m := n.linePattern.Matches(line)
 	if len(m) == 0 { // the line doesn't match
 		return "", nil
