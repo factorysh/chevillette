@@ -19,7 +19,7 @@ func NewNginxLine(prefix ...string) (*NginxLine, error) {
 	n := &NginxLine{
 		tree: r.Root(),
 	}
-	err := n.SetPattern(`<ip> - - <_> "<method> <url> <_>" <status> <_> <_> "<_>" <_>`)
+	err := n.SetPattern(`<ip> - - <_> "<method> <url> <_>" <status> <_> "<_>" "<ua>"`)
 	return n, err
 }
 
@@ -36,14 +36,20 @@ func (n *NginxLine) SetPattern(pttrn string) error {
 	return nil
 }
 
-func (n *NginxLine) Log(line []byte) (string, error) {
+func (n *NginxLine) Log(line []byte) ([]string, error) {
 	m := n.linePattern.Matches(line)
 	if len(m) == 0 { // the line doesn't match
-		return "", nil
+		return nil, nil
+	}
+	if m[3][0] != '2' {
+		return nil, nil
 	}
 	_, _, ok := n.tree.LongestPrefix(m[2])
 	if ok {
-		return string(m[n.linePatternNames["ip"]]), nil
+		return []string{
+			string(m[n.linePatternNames["ip"]]),
+			string(m[n.linePatternNames["ua"]]),
+		}, nil
 	}
-	return "", nil
+	return nil, nil
 }

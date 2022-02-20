@@ -24,12 +24,12 @@ func New(tag string, line log.LineReader) *FluentdInput {
 	s := server.New(func(tag string, ts *time.Time, record map[string]interface{}) error {
 		if tag == f.tag {
 			fmt.Println(tag, ts, record)
-			ip, err := f.line([]byte(record[f.logKey].(string)))
+			keys, err := f.line([]byte(record[f.logKey].(string)))
 			if err != nil {
 				fmt.Println("error", err)
 				return nil
 			}
-			fmt.Println("ip", ip)
+			fmt.Println("keys", keys)
 		}
 		return nil
 	})

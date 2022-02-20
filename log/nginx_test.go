@@ -12,7 +12,8 @@ func TestNginx(t *testing.T) {
 	n, err := NewNginxLine("/uploads/")
 	assert.NoError(t, err)
 
-	ip, err := n.Log([]byte(line))
+	keys, err := n.Log([]byte(line))
 	assert.NoError(t, err)
-	assert.Equal(t, "192.168.1.1", ip)
+	assert.Equal(t, "192.168.1.1", keys[0])
+	assert.Contains(t, keys[1], "Mozilla")
 }

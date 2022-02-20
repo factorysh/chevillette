@@ -1,3 +1,3 @@
 package log
 
-type LineReader func(line []byte) (ip string, err error)
+type LineReader func(line []byte) (keys []string, err error)
