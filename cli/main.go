@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	authrequest "github.com/factorysh/chevillette/auth/auth_request"
+	"github.com/factorysh/chevillette/auth/authrequest"
 	"github.com/factorysh/chevillette/input/fluentd"
 	"github.com/factorysh/chevillette/log"
 	"github.com/factorysh/chevillette/memory"
