@@ -29,3 +29,10 @@ func TestMemoryTimeout(t *testing.T) {
 	fmt.Println(m.db)
 	assert.False(t, ok)
 }
+
+func TestMemoryKet(t *testing.T) {
+	m := New(context.TODO(), 200*time.Millisecond)
+	m.Set([]string{"a", "b"}, time.Now())
+	assert.True(t, m.HasKey([]string{"a", "b"}))
+	assert.False(t, m.HasKey([]string{"a", "a"}))
+}

@@ -11,7 +11,7 @@ type Memory struct {
 	db     map[string]time.Time
 	ttl    time.Duration
 	maxKey int
-	lock   *sync.Mutex
+	lock   *sync.RWMutex
 }
 
 func New(ctx context.Context, ttl time.Duration) *Memory {
@@ -19,7 +19,7 @@ func New(ctx context.Context, ttl time.Duration) *Memory {
 		db:     make(map[string]time.Time),
 		ttl:    ttl,
 		maxKey: 100,
-		lock:   &sync.Mutex{},
+		lock:   &sync.RWMutex{},
 	}
 	go m.garbage(ctx)
 	return m
@@ -58,4 +58,14 @@ func (m *Memory) Set(keys []string, ts time.Time) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 	m.db[strings.Join(keys, " ")] = ts
+}
+
+func (m *Memory) HasKey(keys []string) bool {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+	ts, ok := m.db[strings.Join(keys, " ")]
+	if !ok {
+		return false
+	}
+	return ts.Add(-m.ttl).Before(time.Now())
 }
