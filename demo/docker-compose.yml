@@ -1,0 +1,27 @@
+---
+
+
+services:
+  nginx:
+    image: nginx
+    volumes:
+      - ./data/nginx:/var/log/nginx/
+      - ./www:/usr/share/nginx/html:ro
+
+  fluentbit:
+    image: fluent/fluent-bit:1.8
+    depends_on:
+      - nginx
+    volumes:
+      - ./data/nginx:/var/log/nginx/
+      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+    ports:
+      - 2020
+    extra_hosts:
+     - fluentd:${FLUENTD}
+
+  client:
+    image: curlimages/curl
+    depends_on:
+      - nginx
+    command: curl nginx
