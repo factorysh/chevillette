@@ -34,6 +34,11 @@ func (a *AuthRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (a *AuthRequest) ListenAndServe(addr string) error {
+	return http.ListenAndServe(addr, a)
+}
+
+// See https://golangbyexample.com/golang-ip-address-http-request/
 func getIP(r *http.Request) (string, error) {
 	//Get IP from the X-REAL-IP header
 	ip := r.Header.Get("X-REAL-IP")
