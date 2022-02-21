@@ -1,0 +1,19 @@
+{
+    "CN": "server.example.com",
+    "hosts": [
+        "server.example.com"
+    ],
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "C": "FR",
+            "L": "Paris",
+            "O": "Factory",
+            "OU": "RD",
+            "ST": "IDF"
+        }
+    ]
+}

@@ -1,0 +1,16 @@
+{
+    "CN": "ca.factory.sh" ,
+    "key": {
+        "algo": "ecdsa",
+        "size": 384
+    },
+    "names": [
+        {
+            "C": "FR",
+            "L": "Paris",
+            "O": "Factory",
+            "OU": "RD",
+            "ST": "IDF"
+        }
+    ]
+}
