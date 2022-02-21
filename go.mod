@@ -3,7 +3,7 @@ module github.com/factorysh/chevillette
 go 1.17
 
 require (
-	github.com/factorysh/fluent-server v0.0.2
+	github.com/factorysh/fluent-server v0.2.0
 	github.com/hashicorp/go-immutable-radix v1.3.1
 	github.com/stretchr/testify v1.7.0
 )

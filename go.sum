@@ -1,8 +1,8 @@
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/factorysh/fluent-server v0.0.2 h1:PgeqmPS4hdZzLlIZbvb7RfjKz5lgaceQoN242wci7nM=
-github.com/factorysh/fluent-server v0.0.2/go.mod h1:lnoThB0G1EZaHNz7UJcMSq/3A8a6xAkFRGwbuBj/fCc=
+github.com/factorysh/fluent-server v0.2.0 h1:ptcTwXhX7OXCZv4i0Y1z9+KcuURISrww0I2K4BSeS+U=
+github.com/factorysh/fluent-server v0.2.0/go.mod h1:IxB1lkO8kD0pLVaTRG3GkeS0wzuI0zOA6qMho7p5/C8=
 github.com/hashicorp/go-immutable-radix v1.3.1 h1:DKHmCUm2hRBK510BaiZlwvpD40f8bJFeZnpfm2KLowc=
 github.com/hashicorp/go-immutable-radix v1.3.1/go.mod h1:0y9vanUI8NX6FsYoO3zeMjhV/C5i9g4Q3DwcSNZ4P60=
 github.com/hashicorp/go-uuid v1.0.0 h1:RS8zrF7PhGwyNPOtxSClXXj9HA8feRnJzgnI1RJCSnM=
