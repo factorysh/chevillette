@@ -1,0 +1,11 @@
+---
+
+source:
+  prefix_lines:
+   - "/"
+  fluentd_listen: 0.0.0.0:24224
+
+ttl: 30m
+auth_listen: 0.0.0.0:8080
+whitelist:
+ - 192.168.1.1
