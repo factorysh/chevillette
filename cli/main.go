@@ -34,7 +34,10 @@ func main() {
 	}
 	m := memory.New(context.TODO(), cfg.TTL)
 
-	f := fluentd.New("nginx", l.Log, m)
+	f, err := fluentd.New("nginx", l.Log, m)
+	if err != nil {
+		panic(err)
+	}
 	ar := authrequest.New(m)
 	go ar.ListenAndServe(cfg.AuthListen)
 	f.ListenAndServe(cfg.Source.FluentdListen)

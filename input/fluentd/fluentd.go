@@ -17,14 +17,14 @@ type FluentdInput struct {
 	memory memory.Memory
 }
 
-func New(tag string, line log.LineReader, memory *memory.Memory) *FluentdInput {
+func New(tag string, line log.LineReader, memory *memory.Memory) (*FluentdInput, error) {
 	f := &FluentdInput{
 		tag:    tag,
 		line:   line,
 		logKey: "log",
 		memory: *memory,
 	}
-	s := server.New(func(tag string, ts *time.Time, record map[string]interface{}) error {
+	s, err := server.New(func(tag string, ts *time.Time, record map[string]interface{}) error {
 		if tag == f.tag {
 			fmt.Println(tag, ts, record)
 			keys, err := f.line([]byte(record[f.logKey].(string)))
@@ -37,8 +37,11 @@ func New(tag string, line log.LineReader, memory *memory.Memory) *FluentdInput {
 		}
 		return nil
 	})
+	if err != nil {
+		return nil, err
+	}
 	f.server = s
-	return f
+	return f, nil
 }
 
 func (f *FluentdInput) ListenAndServe(listen string) error {
