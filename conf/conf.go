@@ -4,22 +4,30 @@ import "time"
 
 type Conf struct {
 	Source     *Source       `yaml:"source"`
+	Fluentd    *Fluentd      `yaml:"fluentd"`
 	TTL        time.Duration `yaml:"ttl"`
 	AuthListen string        `yaml:"auth_listen"`
 	WhiteList  []string      `yaml:"whitelist"`
 }
 
+type Fluentd struct {
+	SharedKey string `yaml:"shared_key"`
+	Listen    string `yaml:"listen"`
+}
+
 type Source struct {
-	PrefixLines   []string `yaml:"prefix_lines"`
-	FluentdListen string   `yaml:"fluentd_listen"`
+	PrefixLines []string `yaml:"prefix_lines"`
 }
 
 func (c *Conf) Default() {
 	if c.Source == nil {
 		c.Source = &Source{}
 	}
-	if c.Source.FluentdListen == "" {
-		c.Source.FluentdListen = "127.0.0.1:24224"
+	if c.Fluentd == nil {
+		c.Fluentd = &Fluentd{}
+	}
+	if c.Fluentd.Listen == "" {
+		c.Fluentd.Listen = "127.0.0.1:24224"
 	}
 	if c.Source.PrefixLines == nil {
 		c.Source.PrefixLines = []string{}

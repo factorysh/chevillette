@@ -40,5 +40,5 @@ func main() {
 	}
 	ar := authrequest.New(m)
 	go ar.ListenAndServe(cfg.AuthListen)
-	f.ListenAndServe(cfg.Source.FluentdListen)
+	f.ListenAndServe(cfg.Fluentd.Listen)
 }
