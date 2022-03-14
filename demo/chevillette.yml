@@ -3,7 +3,9 @@
 source:
   prefix_lines:
    - "/"
-  fluentd_listen: 0.0.0.0:24224
+fluentd:
+  listen: 0.0.0.0:24224
+  shared_key: noo5pei5veegho5oad8raiwee3Phaila
 
 ttl: 30m
 auth_listen: 0.0.0.0:8080
