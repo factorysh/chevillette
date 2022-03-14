@@ -2,6 +2,7 @@ package authrequest
 
 import (
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"strings"
@@ -25,13 +26,16 @@ func (a *AuthRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ip, err := getIP(r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Println(err)
+		log.Println(err)
 	}
+	var status int
 	if a.memory.HasKey([]string{ip, r.UserAgent()}) {
-		w.WriteHeader(http.StatusOK)
+		status = http.StatusOK
 	} else {
-		w.WriteHeader(http.StatusForbidden)
+		status = http.StatusForbidden
 	}
+	log.Printf(`%s %d "%v"`, ip, status, r.UserAgent())
+	w.WriteHeader(status)
 }
 
 func (a *AuthRequest) ListenAndServe(addr string) error {
