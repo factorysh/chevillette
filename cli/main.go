@@ -40,5 +40,8 @@ func main() {
 	}
 	ar := authrequest.New(m)
 	go ar.ListenAndServe(cfg.AuthListen)
-	f.ListenAndServe(cfg.Fluentd.Listen)
+	err = f.ListenAndServe(cfg.Fluentd.Listen)
+	if err != nil {
+		panic(err)
+	}
 }
