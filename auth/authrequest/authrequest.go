@@ -29,6 +29,7 @@ func (a *AuthRequest) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 	var status int
+	log.Println("Keys :", ip, r.UserAgent())
 	if a.memory.HasKey([]string{ip, r.UserAgent()}) {
 		status = http.StatusOK
 	} else {
