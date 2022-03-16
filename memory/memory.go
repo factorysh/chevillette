@@ -2,6 +2,9 @@ package memory
 
 import (
 	"context"
+	"fmt"
+	"io"
+	"log"
 	"strings"
 	"sync"
 	"time"
@@ -67,5 +70,18 @@ func (m *Memory) HasKey(keys []string) bool {
 	if !ok {
 		return false
 	}
+	log.Println("key found :", keys)
 	return ts.Add(-m.ttl).Before(time.Now())
+}
+
+func (m *Memory) Dump(w io.Writer) error {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+	for k, v := range m.db {
+		_, err := fmt.Fprintf(w, "%s => %v\n", k, v)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
