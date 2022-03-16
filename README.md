@@ -10,6 +10,14 @@ If your IP and user agent was seen in A server, you are whitelisted is site B.
 It's a basic anti bot tools, not a real security tool, like basic auth or oauth2.
 This tool doesn't handle very well coworking spaces or any public access point.
 
+Web server
+----------
+
+Nginx with [http_auth_request](https://nginx.org/en/docs/http/ngx_http_auth_request_module.html).
+
+Traefik with [ForwardAuth](https://doc.traefik.io/traefik/middlewares/http/forwardauth/).
+
+
 Demo
 ----
 
