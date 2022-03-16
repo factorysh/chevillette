@@ -29,7 +29,7 @@ Test protected website B
 
     docker compose run client curl nginx-b
 
-It should 403
+It should be 403
 
 Unlock with website A
 
@@ -39,4 +39,4 @@ Test website B again
 
     docker compose run client curl nginx-b
 
-It should b 200
+It should be 200
