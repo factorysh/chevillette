@@ -5,6 +5,16 @@ build-linux:
 	make build GOOS=linux
 	if [ "upx not found" != "$(shell which upx)" ]; then upx bin/chevillette; fi
 
+build-with-docker: bin
+	mkdir -p .cache
+	docker run -ti --rm \
+		-v `pwd`:/src/ \
+		-v `pwd`/.cache:/.cache \
+		-w /src \
+		-u `id -u` \
+		golang:1.18-bullseye \
+		make build
+
 test:
 	go test -cover \
 		github.com/factorysh/chevillette/log \
@@ -13,3 +23,7 @@ test:
 
 bin:
 	mkdir -p bin
+
+clean:
+	rm -rf bin
+	#rm -rf .cache

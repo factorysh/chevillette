@@ -19,14 +19,14 @@ services:
       - 2020
 
   chevillette:
-    image: busybox
-    command: chevillette
+    image: debian:bullseye-slim
     expose:
      - 8080
      - 24224
     volumes:
      - ../bin/chevillette:/usr/local/bin/chevillette:ro
      - ./chevillette.yml:/etc/chevillette.yml:ro
+    command: chevillette
 
   nginx-b:
     image: nginx
