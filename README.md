@@ -13,6 +13,12 @@ This tool doesn't handle very well coworking spaces or any public access point.
 Demo
 ----
 
+Build your own `chevillette`
+
+    make build-with-docker
+
+Go to demo folder
+
     cd demo
 
 Launch services
@@ -21,16 +27,16 @@ Launch services
 
 Test protected website B
 
-    docker run client curl nginx-b
+    docker compose run client curl nginx-b
 
 It should 403
 
 Unlock with website A
 
-    docker run client curl nginx-a
+    docker compose run client curl nginx-a
 
 Test website B again
 
-    docker run client curl nginx-b
+    docker compose run client curl nginx-b
 
 It should b 200
