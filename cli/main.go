@@ -34,7 +34,7 @@ func main() {
 	}
 	m := memory.New(context.TODO(), cfg.TTL)
 
-	f, err := fluentd.New("nginx", l.Log, m)
+	f, err := fluentd.New("nginx", l.Log, m, cfg.Fluentd)
 	if err != nil {
 		panic(err)
 	}

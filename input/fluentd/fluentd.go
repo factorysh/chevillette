@@ -6,6 +6,7 @@ import (
 
 	_log "log"
 
+	"github.com/factorysh/chevillette/conf"
 	"github.com/factorysh/chevillette/log"
 	"github.com/factorysh/chevillette/memory"
 	"github.com/factorysh/fluent-server/server"
@@ -19,7 +20,7 @@ type FluentdInput struct {
 	memory memory.Memory
 }
 
-func New(tag string, line log.LineReader, memory *memory.Memory) (*FluentdInput, error) {
+func New(tag string, line log.LineReader, memory *memory.Memory, conf *conf.Fluentd) (*FluentdInput, error) {
 	f := &FluentdInput{
 		tag:    tag,
 		line:   line,
@@ -43,6 +44,7 @@ func New(tag string, line log.LineReader, memory *memory.Memory) (*FluentdInput,
 		return nil, err
 	}
 	s.Debug = true
+	s.SharedKey = conf.SharedKey
 	f.server = s
 	return f, nil
 }
