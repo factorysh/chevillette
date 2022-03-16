@@ -3,7 +3,7 @@ build: bin
 
 build-linux:
 	make build GOOS=linux
-	upx bin/chevillette
+	if [ "upx not found" != "$(shell which upx)" ]; then upx bin/chevillette; fi
 
 test:
 	go test -cover \
