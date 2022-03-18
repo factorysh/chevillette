@@ -27,7 +27,7 @@ Build your own `chevillette`
 
 Go to demo folder
 
-    cd demo
+    cd demo-fluentd
 
 Launch services
 
