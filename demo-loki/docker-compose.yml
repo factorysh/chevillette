@@ -9,6 +9,10 @@ services:
 
   loki:
     image: grafana/loki
+    ports:
+     - 3100:3100
+    volumes:
+     - ./data/loki:/loki
 
   promtail:
     image: grafana/promtail
