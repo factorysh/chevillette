@@ -3,10 +3,12 @@ package main
 import (
 	"context"
 	"os"
+	"time"
 
 	"github.com/factorysh/chevillette/auth/authrequest"
 	"github.com/factorysh/chevillette/conf"
 	"github.com/factorysh/chevillette/input/fluentd"
+	"github.com/factorysh/chevillette/input/loki"
 	"github.com/factorysh/chevillette/log"
 	"github.com/factorysh/chevillette/memory"
 	"gopkg.in/yaml.v3"
@@ -36,13 +38,30 @@ func main() {
 	defer cancel()
 	m := memory.New(ctx, cfg.TTL)
 
-	f, err := fluentd.New("nginx", l.Log, m, cfg.Fluentd)
-	if err != nil {
-		panic(err)
-	}
 	ar := authrequest.New(m)
-	go ar.ListenAndServe(cfg.AuthListen)
-	err = f.ListenAndServe(cfg.Fluentd.Listen)
+
+	if cfg.Fluentd != nil {
+		f, err := fluentd.New("nginx", l.Log, m, cfg.Fluentd)
+		if err != nil {
+			panic(err)
+		}
+		go f.ListenAndServe(cfg.Fluentd.Listen)
+	}
+
+	if cfg.Loki != nil {
+		l, err := loki.New(cfg.Loki.Url)
+		if err != nil {
+			panic(err)
+		}
+		go func() {
+			err = l.Tail(context.TODO(), cfg.Loki.Query, 10*time.Second, 1000, time.Now())
+			if err != nil {
+				panic(err)
+			}
+		}()
+	}
+
+	err = ar.ListenAndServe(cfg.AuthListen)
 	if err != nil {
 		panic(err)
 	}

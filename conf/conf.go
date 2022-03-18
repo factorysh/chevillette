@@ -5,9 +5,16 @@ import "time"
 type Conf struct {
 	Source     *Source       `yaml:"source"`
 	Fluentd    *Fluentd      `yaml:"fluentd"`
+	Loki       *Loki         `yaml:"loki"`
 	TTL        time.Duration `yaml:"ttl"`
 	AuthListen string        `yaml:"auth_listen"`
 	WhiteList  []string      `yaml:"whitelist"`
+}
+
+type Loki struct {
+	Url      string        `yaml:"url"`
+	Query    string        `yaml:"query"`
+	DelayFor time.Duration `yaml:"delay_for"`
 }
 
 type Fluentd struct {
