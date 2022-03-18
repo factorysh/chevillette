@@ -7,9 +7,25 @@ import (
 	_url "net/url"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"nhooyr.io/websocket"
 	"nhooyr.io/websocket/wsjson"
 )
+
+type Stream struct {
+	Stream map[string]string `yaml:"stream"`
+	Values [][]string        `yaml:"values"`
+}
+
+type DroppedEntry struct {
+	Labels    map[string]string `yaml:"labels"`
+	Timestamp string            `yaml:"timestamp"`
+}
+
+type Tail struct {
+	Streams        []Stream       `yaml:"streams"`
+	DroppedEntries []DroppedEntry `yaml:"dropped_entries"`
+}
 
 type Loki struct {
 	Url string
@@ -47,10 +63,13 @@ func (l *Loki) Tail(ctx context.Context, query string, delay_for time.Duration, 
 		return err
 	}
 	defer c.Close(websocket.StatusInternalError, "the sky is falling")
-	var resp interface{}
-	err = wsjson.Read(ctx, c, resp)
-	if err != nil {
-		return err
+	var resp Tail
+	for {
+		err = wsjson.Read(ctx, c, &resp)
+		if err != nil {
+			return err
+		}
+		spew.Dump(resp)
 	}
 	return nil
 }
