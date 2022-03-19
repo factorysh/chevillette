@@ -1,6 +1,6 @@
 build: bin
 	rm -f bien/chevillette
-	go build -o ./bin/chevillette cli/main.go
+	go build -o ./bin/chevillette cli/chevillette/main.go
 
 build-linux:
 	make build GOOS=linux
