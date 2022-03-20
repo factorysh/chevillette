@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	_url "net/url"
 	"time"
 
@@ -62,7 +61,7 @@ func New(url string) (*Loki, error) {
 }
 
 func (l *Loki) Tail(ctx context.Context, query string, delayFor time.Duration, limit int, start time.Time) error {
-	params := url.Values{}
+	params := _url.Values{}
 	params.Add("query", query)
 	params.Add("limit", fmt.Sprintf("%d", limit))
 	if delayFor != 0 {
