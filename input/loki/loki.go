@@ -79,7 +79,7 @@ func (l *Loki) Tail(ctx context.Context, query string, delayFor time.Duration, l
 	}
 
 	defer c.Close()
-	var resp interface{}
+	var resp Tail
 	for {
 		err = c.ReadJSON(&resp)
 		if err != nil {
