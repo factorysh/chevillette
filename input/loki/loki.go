@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"net/url"
 	_url "net/url"
 	"time"
@@ -69,10 +71,13 @@ func (l *Loki) Tail(ctx context.Context, query string, delayFor time.Duration, l
 	params.Add("start", fmt.Sprintf("%d", start.UnixNano()))
 
 	u := fmt.Sprintf("%s?%s", l.Url, params.Encode())
-	c, _, err := l.dialer.DialContext(ctx, u, nil)
+	header := &http.Header{}
+	c, res, err := l.dialer.DialContext(ctx, u, *header)
 	if err != nil {
-		return err
+		buf, _ := ioutil.ReadAll(res.Body)
+		return fmt.Errorf("websocket error : %s (%v)", string(buf), err)
 	}
+
 	defer c.Close()
 	var resp interface{}
 	for {
