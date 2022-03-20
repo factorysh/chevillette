@@ -27,6 +27,7 @@ services:
       - loki
     volumes:
       - ./data/nginx:/var/log/nginx/
+      - ./data/promtail:/var/lib/promtail
       - ./promtail.yml:/etc/promtail/config.yml:ro
     expose:
      - 9080
