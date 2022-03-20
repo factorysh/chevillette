@@ -17,6 +17,9 @@ build-with-docker: bin
 		make build
 	file bin/chevillette
 
+build-loki: bin
+	go build -o ./bin/chevillette-loki cli/chevillette-loki/main.go
+
 test:
 	go test -cover \
 		github.com/factorysh/chevillette/log \

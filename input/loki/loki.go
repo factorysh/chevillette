@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"net/url"
 	_url "net/url"
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
-	"nhooyr.io/websocket"
-	"nhooyr.io/websocket/wsjson"
+	"github.com/gorilla/websocket"
 )
 
 type Stream struct {
@@ -28,7 +28,8 @@ type Tail struct {
 }
 
 type Loki struct {
-	Url string
+	Url    string
+	dialer *websocket.Dialer
 }
 
 func New(url string) (*Loki, error) {
@@ -53,19 +54,29 @@ func New(url string) (*Loki, error) {
 		buff.WriteString(u.Path)
 	}
 	return &Loki{
-		Url: buff.String(),
+		Url:    buff.String(),
+		dialer: &websocket.Dialer{},
 	}, nil
 }
 
-func (l *Loki) Tail(ctx context.Context, query string, delay_for time.Duration, limit int, start time.Time) error {
-	c, _, err := websocket.Dial(ctx, "ws://localhost:8080", nil)
+func (l *Loki) Tail(ctx context.Context, query string, delayFor time.Duration, limit int, start time.Time) error {
+	params := url.Values{}
+	params.Add("query", query)
+	params.Add("limit", fmt.Sprintf("%d", limit))
+	if delayFor != 0 {
+		params.Add("delay_for", fmt.Sprintf("%d", int64(delayFor.Seconds())))
+	}
+	params.Add("start", fmt.Sprintf("%d", start.UnixNano()))
+
+	u := fmt.Sprintf("%s?%s", l.Url, params.Encode())
+	c, _, err := l.dialer.DialContext(ctx, u, nil)
 	if err != nil {
 		return err
 	}
-	defer c.Close(websocket.StatusInternalError, "the sky is falling")
-	var resp Tail
+	defer c.Close()
+	var resp interface{}
 	for {
-		err = wsjson.Read(ctx, c, &resp)
+		err = c.ReadJSON(&resp)
 		if err != nil {
 			return err
 		}
