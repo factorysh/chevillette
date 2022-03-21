@@ -14,13 +14,13 @@ import (
 )
 
 type Stream struct {
-	Stream  map[string]string `yaml:"stream"`
-	Entries []Entry           `yaml:"values"`
+	Stream  map[string]string `json:"stream"`
+	Entries []Entry           `json:"values"`
 }
 
 type Tail struct {
-	Streams        []Stream       `yaml:"streams"`
-	DroppedEntries []DroppedEntry `yaml:"dropped_entries"`
+	Streams        []Stream       `json:"streams"`
+	DroppedEntries []DroppedEntry `json:"dropped_entries"`
 }
 
 type Loki struct {

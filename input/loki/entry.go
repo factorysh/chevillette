@@ -38,8 +38,8 @@ func (e *Entry) UnmarshalJSON(data []byte) error {
 }
 
 type DroppedEntry struct {
-	Labels    map[string]string `yaml:"labels"`
-	Timestamp time.Time         `yaml:"timestamp"`
+	Labels    map[string]string `json:"labels"`
+	Timestamp time.Time         `json:"timestamp"`
 }
 
 func (d *DroppedEntry) MarshalJSON() ([]byte, error) {
