@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"time"
 
@@ -49,12 +50,24 @@ func main() {
 	}
 
 	if cfg.Loki != nil {
-		l, err := loki.New(cfg.Loki.Url)
+		lok, err := loki.NewLoki(cfg.Loki.Url)
 		if err != nil {
 			panic(err)
 		}
 		go func() {
-			err = l.Tail(context.TODO(), cfg.Loki.Query, 10*time.Second, 1000, time.Now())
+			err = lok.Tail(context.TODO(), cfg.Loki.Query, 2*time.Second, 1000, time.Now(),
+				func(data *loki.Tail) error {
+					for _, stream := range data.Streams {
+						for _, entry := range stream.Entries {
+							slugs, err := l.Log([]byte(entry.Line))
+							if err != nil {
+								panic(err)
+							}
+							fmt.Println(slugs)
+						}
+					}
+					return nil
+				})
 			if err != nil {
 				panic(err)
 			}
