@@ -6,6 +6,7 @@ source:
 
 loki:
   url: http://loki:3100
+  query: '{job="nginx"}'
 
 ttl: 30m
 auth_listen: 0.0.0.0:8080
