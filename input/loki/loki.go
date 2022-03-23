@@ -5,11 +5,11 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	_url "net/url"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gorilla/websocket"
 )
 
@@ -24,11 +24,12 @@ type Tail struct {
 }
 
 type Loki struct {
-	Url    string
-	dialer *websocket.Dialer
+	Url      string // websocket url
+	lokiRoot string
+	dialer   *websocket.Dialer
 }
 
-func New(url string) (*Loki, error) {
+func NewLoki(url string) (*Loki, error) {
 	u, err := _url.Parse(url)
 	if err != nil {
 		return nil, err
@@ -50,12 +51,13 @@ func New(url string) (*Loki, error) {
 		buff.WriteString(u.Path)
 	}
 	return &Loki{
-		Url:    buff.String(),
-		dialer: &websocket.Dialer{},
+		Url:      buff.String(),
+		lokiRoot: url,
+		dialer:   &websocket.Dialer{},
 	}, nil
 }
 
-func (l *Loki) Tail(ctx context.Context, query string, delayFor time.Duration, limit int, start time.Time) error {
+func (l *Loki) Tail(ctx context.Context, query string, delayFor time.Duration, limit int, start time.Time, handler func(*Tail) error) error {
 	params := _url.Values{}
 	params.Add("query", query)
 	params.Add("limit", fmt.Sprintf("%d", limit))
@@ -66,20 +68,45 @@ func (l *Loki) Tail(ctx context.Context, query string, delayFor time.Duration, l
 
 	u := fmt.Sprintf("%s?%s", l.Url, params.Encode())
 	header := &http.Header{}
-	c, res, err := l.dialer.DialContext(ctx, u, *header)
-	if err != nil {
-		buf, _ := ioutil.ReadAll(res.Body)
-		return fmt.Errorf("websocket error : %s (%v)", string(buf), err)
-	}
 
-	defer c.Close()
-	var resp Tail
 	for {
-		err = c.ReadJSON(&resp)
+		ready, err := http.Get(fmt.Sprintf("%s/ready", l.lokiRoot))
 		if err != nil {
-			return err
+			log.Println(err)
+			time.Sleep(10 * time.Second)
+			continue
 		}
-		spew.Dump(resp)
+		if ready.StatusCode != 200 {
+			body, err := ioutil.ReadAll(ready.Body)
+			if err != nil {
+				return err
+			}
+			ready.Body.Close()
+			log.Println("Loki is not ready :", string(body))
+			time.Sleep(10 * time.Second)
+			continue
+		}
+
+		c, res, err := l.dialer.DialContext(ctx, u, *header)
+		if err != nil {
+			buf, _ := ioutil.ReadAll(res.Body)
+			log.Printf("Loki websocket error : %s (%v)", string(buf), err)
+			time.Sleep(10 * time.Second)
+			continue
+		}
+
+		defer c.Close()
+		var resp Tail
+		for {
+			err = c.ReadJSON(&resp)
+			if err != nil {
+				return err
+			}
+			err = handler(&resp)
+			if err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }
