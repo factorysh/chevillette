@@ -40,7 +40,7 @@ func main() {
 
 	ar := authrequest.New(m)
 
-	if cfg.Fluentd != nil {
+	if cfg.Fluentd != nil && cfg.Fluentd.Listen != "" {
 		f, err := fluentd.New("nginx", l.Log, m, cfg.Fluentd)
 		if err != nil {
 			panic(err)

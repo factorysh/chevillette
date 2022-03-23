@@ -33,9 +33,6 @@ func (c *Conf) Default() {
 	if c.Fluentd == nil {
 		c.Fluentd = &Fluentd{}
 	}
-	if c.Fluentd.Listen == "" {
-		c.Fluentd.Listen = "127.0.0.1:24224"
-	}
 	if c.Source.PrefixLines == nil {
 		c.Source.PrefixLines = []string{}
 	}
