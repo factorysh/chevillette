@@ -2,9 +2,7 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"os"
-	"time"
 
 	"github.com/factorysh/chevillette/auth/authrequest"
 	"github.com/factorysh/chevillette/conf"
@@ -50,24 +48,12 @@ func main() {
 	}
 
 	if cfg.Loki != nil {
-		lok, err := loki.NewLoki(cfg.Loki.Url)
+		lok, err := loki.New(cfg.Loki.Url, `{job="nginx"}`, l.Log, m)
 		if err != nil {
 			panic(err)
 		}
 		go func() {
-			err = lok.Tail(context.TODO(), cfg.Loki.Query, 2*time.Second, 1000, time.Now(),
-				func(data *loki.Tail) error {
-					for _, stream := range data.Streams {
-						for _, entry := range stream.Entries {
-							slugs, err := l.Log([]byte(entry.Line))
-							if err != nil {
-								panic(err)
-							}
-							fmt.Println(slugs)
-						}
-					}
-					return nil
-				})
+			err = lok.Serve(context.TODO())
 			if err != nil {
 				panic(err)
 			}
