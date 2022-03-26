@@ -7,7 +7,12 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/goleak"
 )
+
+func TestMain(m *testing.M) {
+	goleak.VerifyTestMain(m)
+}
 
 func TestMemoryCancel(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
@@ -19,7 +24,9 @@ func TestMemoryCancel(t *testing.T) {
 }
 
 func TestMemoryTimeout(t *testing.T) {
-	m := New(context.TODO(), 200*time.Millisecond)
+	ctx, cancel := context.WithCancel(context.TODO())
+	defer cancel()
+	m := New(ctx, 200*time.Millisecond)
 	m.Set([]string{"a", "b"}, time.Now())
 	_, ok := m.db["a b"]
 	assert.True(t, ok)
@@ -30,8 +37,10 @@ func TestMemoryTimeout(t *testing.T) {
 	assert.False(t, ok)
 }
 
-func TestMemoryKet(t *testing.T) {
-	m := New(context.TODO(), 200*time.Millisecond)
+func TestMemoryKey(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.TODO())
+	defer cancel()
+	m := New(ctx, 200*time.Millisecond)
 	m.Set([]string{"a", "b"}, time.Now())
 	assert.True(t, m.HasKey([]string{"a", "b"}))
 	assert.False(t, m.HasKey([]string{"a", "a"}))

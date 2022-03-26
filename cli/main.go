@@ -32,7 +32,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	m := memory.New(context.TODO(), cfg.TTL)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	m := memory.New(ctx, cfg.TTL)
 
 	f, err := fluentd.New("nginx", l.Log, m, cfg.Fluentd)
 	if err != nil {
