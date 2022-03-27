@@ -25,13 +25,20 @@ Build your own `chevillette`
 
     make build-with-docker
 
+
+### Fluentd demo
+
 Go to demo folder
 
     cd demo-fluentd
 
+### Loki demo
+
 Launch services
 
     docker compose up -d
+
+### Client
 
 Test protected website B
 
@@ -48,3 +55,4 @@ Test website B again
     docker compose run client curl nginx-b
 
 It should be 200
+
