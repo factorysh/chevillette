@@ -8,6 +8,7 @@ import (
 	"github.com/factorysh/chevillette/conf"
 	"github.com/factorysh/chevillette/input/fluentd"
 	"github.com/factorysh/chevillette/input/loki"
+	"github.com/factorysh/chevillette/input/lumber"
 	"github.com/factorysh/chevillette/log"
 	"github.com/factorysh/chevillette/memory"
 	"gopkg.in/yaml.v3"
@@ -58,6 +59,14 @@ func main() {
 				panic(err)
 			}
 		}()
+	}
+
+	if cfg.Lumber != nil {
+		lumb, err := lumber.New(l.Log, m, *cfg.Lumber)
+		if err != nil {
+			panic(err)
+		}
+		go lumb.Serve()
 	}
 
 	err = ar.ListenAndServe(cfg.AuthListen)

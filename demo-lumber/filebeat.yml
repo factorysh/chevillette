@@ -1,0 +1,21 @@
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      hints.enabled: true
+
+processors:
+- add_cloud_metadata: ~
+
+filebeat.inputs:
+- type: filestream
+  paths:
+    - /var/log/nginx/*.log
+
+output.logstash:
+  hosts:
+  - chevillette:5044

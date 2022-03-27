@@ -13,10 +13,16 @@ This tool doesn't handle very well coworking spaces or any public access point.
 Web server
 ----------
 
-Nginx with [http_auth_request](https://nginx.org/en/docs/http/ngx_http_auth_request_module.html).
+ * [x] Nginx with [http_auth_request](https://nginx.org/en/docs/http/ngx_http_auth_request_module.html).
+ * [x] Traefik with [ForwardAuth](https://doc.traefik.io/traefik/middlewares/http/forwardauth/).
+ * [ ] Haproxy
 
-Traefik with [ForwardAuth](https://doc.traefik.io/traefik/middlewares/http/forwardauth/).
+Input
+-----
 
+ * [x] Fluentd server
+ * [x] Loki tail
+ * [x] Lumber (aka logstash protocol)
 
 Demo
 ----
@@ -31,11 +37,20 @@ Build your own `chevillette`
 Go to demo folder
 
     cd demo-fluentd
+    docker compose up -d
 
 ### Loki demo
 
-Launch services
+Go to demo folder
 
+    cd demo-loki
+    docker compose up -d
+
+### Lumber demo
+
+Go to demo folder
+
+    cd demo-lumber
     docker compose up -d
 
 ### Client
