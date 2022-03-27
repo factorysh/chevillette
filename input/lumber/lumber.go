@@ -58,10 +58,21 @@ func (l *LumberInput) Serve() error {
 				}
 				keys, err := l.line([]byte(message))
 				if err != nil {
-					_log.Println(err)
+					_log.Println("err", err)
+					continue
 				}
-				// FIXME parce @timestamp
-				l.memory.Set(keys, time.Now())
+				ts, ok := evt["@timestamp"].(string)
+				if !ok {
+					_log.Println("err can't find string @timestamp")
+					continue
+				}
+				// 2022-03-27T18:39:12.363Z
+				t, err := time.Parse("2006-01-02T15:04:05Z", ts)
+				if err != nil {
+					_log.Println("err", err)
+					continue
+				}
+				l.memory.Set(keys, t)
 				_log.Println("keys", keys)
 			}
 			batch.ACK()
