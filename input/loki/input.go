@@ -13,7 +13,7 @@ type LokiInput struct {
 	Query  string
 	line   log.LineReader
 	loki   *Loki
-	memory memory.Memory
+	memory *memory.Memory
 }
 
 func New(url string, query string, line log.LineReader, memory *memory.Memory) (*LokiInput, error) {
@@ -22,10 +22,11 @@ func New(url string, query string, line log.LineReader, memory *memory.Memory) (
 		return nil, err
 	}
 	return &LokiInput{
-		Url:   url,
-		Query: query,
-		line:  line,
-		loki:  l,
+		Url:    url,
+		Query:  query,
+		line:   line,
+		loki:   l,
+		memory: memory,
 	}, nil
 }
 
