@@ -2,6 +2,7 @@ package loki
 
 import (
 	"context"
+	_log "log"
 	"time"
 
 	"github.com/factorysh/chevillette/log"
@@ -21,6 +22,7 @@ func New(url string, query string, line log.LineReader, memory *memory.Memory) (
 	if err != nil {
 		return nil, err
 	}
+	_log.Println("Set Loki server:", url)
 	return &LokiInput{
 		Url:    url,
 		Query:  query,
