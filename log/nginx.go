@@ -1,6 +1,8 @@
 package log
 
 import (
+	"fmt"
+
 	"github.com/factorysh/chevillette/pattern"
 	iradix "github.com/hashicorp/go-immutable-radix"
 )
@@ -40,6 +42,9 @@ func (n *NginxLine) Log(line []byte) ([]string, error) {
 	m := n.linePattern.Matches(line)
 	if len(m) == 0 { // the line doesn't match
 		return nil, nil
+	}
+	if len(m) != 5 {
+		return nil, fmt.Errorf("wrong size : %d [%s] %v", len(m), string(line), m)
 	}
 	if m[3][0] != '2' {
 		return nil, nil
