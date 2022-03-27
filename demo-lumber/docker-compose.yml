@@ -1,0 +1,43 @@
+---
+
+services:
+  nginx-a:
+    image: nginx
+    volumes:
+      - ./data/nginx:/var/log/nginx/
+      - ./wwwA:/usr/share/nginx/html:ro
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.1.1
+    volumes:
+      - ./data/nginx:/var/log/nginx/:ro
+      - ./filebeat.yml:/etc/filebeat.yml:ro
+    command: -c /etc/filebeat.yml -e
+    depends_on:
+     - nginx-a
+     - chevillette
+
+  chevillette:
+    image: debian:bullseye-slim
+    expose:
+     - 8080
+     - 24224
+    volumes:
+     - ../bin/chevillette:/usr/local/bin/chevillette:ro
+     - ./chevillette.yml:/etc/chevillette.yml:ro
+    command: chevillette
+
+  nginx-b:
+    image: nginx
+    volumes:
+     - ./default.conf:/etc/nginx/conf.d/default.conf:ro
+     - ./wwwB:/usr/share/nginx/html:ro
+    depends_on:
+      - chevillette
+
+  client:
+    image: curlimages/curl
+    depends_on:
+      - nginx-a
+      - nginx-b
+    command: /bin/sh

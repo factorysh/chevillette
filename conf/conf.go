@@ -6,6 +6,7 @@ type Conf struct {
 	Source     *Source       `yaml:"source"`
 	Fluentd    *Fluentd      `yaml:"fluentd"`
 	Loki       *Loki         `yaml:"loki"`
+	Lumber     *Lumber       `yaml:"lumber"`
 	TTL        time.Duration `yaml:"ttl"`
 	AuthListen string        `yaml:"auth_listen"`
 	WhiteList  []string      `yaml:"whitelist"`
@@ -20,6 +21,10 @@ type Loki struct {
 type Fluentd struct {
 	SharedKey string `yaml:"shared_key"`
 	Listen    string `yaml:"listen"`
+}
+
+type Lumber struct {
+	Listen string `yaml:"listen"`
 }
 
 type Source struct {
