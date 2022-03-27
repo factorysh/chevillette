@@ -1,0 +1,14 @@
+---
+
+source:
+  prefix_lines:
+   - "/"
+
+loki:
+  url: http://loki:3100
+  query: '{job="nginx"}'
+
+ttl: 30m
+auth_listen: 0.0.0.0:8080
+whitelist:
+ - 192.168.1.1

@@ -1,0 +1,60 @@
+---
+
+services:
+  nginx-a:
+    image: nginx
+    volumes:
+      - ./data/nginx:/var/log/nginx/
+      - ./wwwA:/usr/share/nginx/html:ro
+
+  loki:
+    image: grafana/loki
+    ports:
+     - 3100:3100
+    volumes:
+     - ./data/loki:/loki
+
+  grafana:
+    image: grafana/grafana
+    ports:
+     - 3000:3000
+    depends_on:
+     - loki
+
+  promtail:
+    image: grafana/promtail
+    depends_on:
+      - loki
+    volumes:
+      - ./data/nginx:/var/log/nginx/
+      - ./data/promtail:/var/lib/promtail
+      - ./promtail.yml:/etc/promtail/config.yml:ro
+    expose:
+     - 9080
+
+  chevillette:
+    image: debian:bullseye-slim
+    expose:
+     - 8080
+     - 24224
+    volumes:
+     - ../bin/chevillette:/usr/local/bin/chevillette:ro
+     - ./chevillette.yml:/etc/chevillette.yml:ro
+    command: chevillette
+    depends_on:
+      - loki
+
+  nginx-b:
+    image: nginx
+    volumes:
+     - ./default.conf:/etc/nginx/conf.d/default.conf:ro
+     - ./wwwB:/usr/share/nginx/html:ro
+    depends_on:
+      - chevillette
+
+  client:
+    image: curlimages/curl
+    depends_on:
+      - nginx-a
+      - nginx-b
+    command: /bin/sh

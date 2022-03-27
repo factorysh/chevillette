@@ -5,9 +5,16 @@ import "time"
 type Conf struct {
 	Source     *Source       `yaml:"source"`
 	Fluentd    *Fluentd      `yaml:"fluentd"`
+	Loki       *Loki         `yaml:"loki"`
 	TTL        time.Duration `yaml:"ttl"`
 	AuthListen string        `yaml:"auth_listen"`
 	WhiteList  []string      `yaml:"whitelist"`
+}
+
+type Loki struct {
+	Url      string        `yaml:"url"`
+	Query    string        `yaml:"query"`
+	DelayFor time.Duration `yaml:"delay_for"`
 }
 
 type Fluentd struct {
@@ -25,9 +32,6 @@ func (c *Conf) Default() {
 	}
 	if c.Fluentd == nil {
 		c.Fluentd = &Fluentd{}
-	}
-	if c.Fluentd.Listen == "" {
-		c.Fluentd.Listen = "127.0.0.1:24224"
 	}
 	if c.Source.PrefixLines == nil {
 		c.Source.PrefixLines = []string{}

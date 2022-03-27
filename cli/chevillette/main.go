@@ -7,6 +7,7 @@ import (
 	"github.com/factorysh/chevillette/auth/authrequest"
 	"github.com/factorysh/chevillette/conf"
 	"github.com/factorysh/chevillette/input/fluentd"
+	"github.com/factorysh/chevillette/input/loki"
 	"github.com/factorysh/chevillette/log"
 	"github.com/factorysh/chevillette/memory"
 	"gopkg.in/yaml.v3"
@@ -36,13 +37,30 @@ func main() {
 	defer cancel()
 	m := memory.New(ctx, cfg.TTL)
 
-	f, err := fluentd.New("nginx", l.Log, m, cfg.Fluentd)
-	if err != nil {
-		panic(err)
-	}
 	ar := authrequest.New(m)
-	go ar.ListenAndServe(cfg.AuthListen)
-	err = f.ListenAndServe(cfg.Fluentd.Listen)
+
+	if cfg.Fluentd != nil && cfg.Fluentd.Listen != "" {
+		f, err := fluentd.New("nginx", l.Log, m, cfg.Fluentd)
+		if err != nil {
+			panic(err)
+		}
+		go f.ListenAndServe(cfg.Fluentd.Listen)
+	}
+
+	if cfg.Loki != nil {
+		lok, err := loki.New(cfg.Loki.Url, `{job="nginx"}`, l.Log, m)
+		if err != nil {
+			panic(err)
+		}
+		go func() {
+			err = lok.Serve(context.TODO())
+			if err != nil {
+				panic(err)
+			}
+		}()
+	}
+
+	err = ar.ListenAndServe(cfg.AuthListen)
 	if err != nil {
 		panic(err)
 	}

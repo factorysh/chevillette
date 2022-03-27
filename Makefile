@@ -1,6 +1,6 @@
 build: bin
 	rm -f bien/chevillette
-	go build -o ./bin/chevillette cli/main.go
+	go build -o ./bin/chevillette cli/chevillette/main.go
 
 build-linux:
 	make build GOOS=linux
@@ -16,6 +16,9 @@ build-with-docker: bin
 		golang:1.17-bullseye \
 		make build
 	file bin/chevillette
+
+build-loki: bin
+	go build -o ./bin/chevillette-loki cli/chevillette-loki/main.go
 
 test:
 	go test -cover \
