@@ -1,5 +1,6 @@
-up:
+up: data/nginx
 	docker compose up -d filebeat nginx-a nginx-b
+	docker compose logs -f filebeat
 
 pull:
 	docker compose pull
@@ -12,3 +13,6 @@ client:
 
 status:
 	docker compose ps
+
+data/nginx:
+	mkdir -p data/nginx
