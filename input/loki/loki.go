@@ -81,7 +81,10 @@ func (l *Loki) Tail(ctx context.Context, query string, delayFor time.Duration, l
 			if err != nil {
 				return err
 			}
-			ready.Body.Close()
+			err = ready.Body.Close()
+			if err != nil {
+				return err
+			}
 			log.Println("Loki is not ready :", string(body))
 			time.Sleep(10 * time.Second)
 			continue

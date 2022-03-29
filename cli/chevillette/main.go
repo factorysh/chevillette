@@ -19,7 +19,7 @@ func main() {
 	if cfgPath == "" {
 		cfgPath = "/etc/chevillette.yml"
 	}
-	c, err := os.Open(cfgPath)
+	c, err := os.Open(cfgPath) //#nosec yes, the config file can be anywhere.
 	if err != nil {
 		panic(err)
 	}
